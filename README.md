@@ -1,4 +1,4 @@
-![AgroML logo](https://github.com/juanantoniobellido/agroML/blob/main/agroml/images/agroml.png)
+![AgroML logo](https://github.com/Smarity/AgroML/tree/main/agroml/images/agroml.png)
 
 **Agro**nomy **M**achine **L**earning 
 An easy tool for developing estimations and forecasts of agro-meteorological 
