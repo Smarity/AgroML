@@ -94,12 +94,12 @@ _note_: By default, GamaClassifier optimizes towards `log_loss`.
 If you want to cite AgroML, please use [our JOSS publication]().
 
 ```latex
-@article{Bellido-Jimenez2021,
+@article{Bellido-Jimenez2022,
   doi = {},
   url = {https://doi.org/},
   year  = {2022},
-  month = {jan},
-  publisher = {Computers and Electronics in Agronomy},
+  month = {},
+  publisher = {Agronomy},
   volume = {},
   number = {},
   pages = {},
