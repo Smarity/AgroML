@@ -56,9 +56,9 @@ def splitDataByPercentageWithLagDays(
     outputs:
         xTrain (np.array) - shape(batchTrain, lagTimeSteps, nFeaturesInput)
         
-        yTrain (np.array) - shape(batchTrain, lagTimeSteps, nFeaturesOutput)
+        yTrain (np.array) - shape(batchTrain, nFeaturesOutput)
         
-        xTest (np.array) - shape(batchTest, nFeaturesInput)
+        xTest (np.array) - shape(batchTest, lagTimeSteps, nFeaturesInput)
         
         yTest (np.array) - shape(batchTest, nFeaturesOutput)
     """
