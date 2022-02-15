@@ -57,6 +57,8 @@ def splitDataByStation( df, stationsTrainList, stationTest, varListInputs, varLi
         scaler.fit(xTrain)
         xTrain = scaler.transform(xTrain)
         xTest = scaler.transform(xTest)
+    else:
+        scaler ='none'
 
     xTrain = xTrain.transpose().reshape(len(dfStationTrain), 1, len(varListInputs))
     xTest = xTest.transpose().reshape(len(dfStationTest), 1, len(varListInputs))
