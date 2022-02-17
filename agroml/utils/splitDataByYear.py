@@ -29,11 +29,11 @@ def splitDataByYear(
         preprocessing (str) - 'Standardization' or 'Normalization' or 'None'
 
     outputs:
-        xTrain (np.array) - shape(batchTrain, nFeaturesInput)
+        xTrain (np.array) - shape(batchTrain, 1, nFeaturesInput)
+        
+        xTest (np.array) - shape(batchTest, 1, nFeaturesInput)
         
         yTrain (np.array) - shape(batchTrain, nFeaturesOutput)
-        
-        xTest (np.array) - shape(batchTest, nFeaturesInput)
         
         yTest (np.array) - shape(batchTest, nFeaturesOutput)
     """

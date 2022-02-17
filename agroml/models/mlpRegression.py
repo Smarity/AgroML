@@ -117,8 +117,12 @@ class MultiLayerPerceptron:
         model = load_model(fileName)
         return model
 
-    def savePredictions(self, yPred, yTest):
-        pass
+    def savePredictions(self, yPred, yTest, fileName):
+        root
+
+        for i in range(yPred.shape[1]):
+
+        
         
     def trainFullTrainingData(
         self, 
