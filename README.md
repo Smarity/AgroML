@@ -95,16 +95,16 @@ If you want to cite AgroML, please use [our JOSS publication]().
 
 ```latex
 @article{Bellido-Jimenez2022,
-  doi = {},
-  url = {https://doi.org/},
+  doi = {https://doi.org/10.3390/agronomy12030656},
+  url = {https://www.mdpi.com/2073-4395/12/3/656},
   year  = {2022},
-  month = {},
+  month = {march},
   publisher = {Agronomy},
-  volume = {},
-  number = {},
+  volume = {12},
+  number = {3},
   pages = {},
   author = {Juan Antonio Bellido-Jiménez, Javier Estévez, Joaquin Vanschoren and Amanda Penélope García-Marín},
-  title = {{AgroML}: },
-  journal = {}
+  title = {{AgroML}: An Open-Source Repository to Forecast Reference Evapotranspiration in Different Geo-Climatic Conditions Using Machine Learning and Transformer-Based Models },
+  journal = {Agronomy}
 }
 ```
