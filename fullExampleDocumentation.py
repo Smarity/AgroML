@@ -24,7 +24,7 @@ uniqueYears = np.unique(df['year'])
 varListInputs = ['tx', 'tn', 'rs', 'day']
 varListOutputs = ['et0']
 
-# split data to train and test
+# split data to train and test datasets
 xTrain, xTest, yTrain, yTest, scaler = splitDataByYear(
     df=df,
     station=uniqueStations[-1], 
