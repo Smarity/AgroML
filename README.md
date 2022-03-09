@@ -2,8 +2,7 @@
 
 **Agro**nomy **M**achine **L**earning 
 An easy tool for developing estimations and forecasts of agro-meteorological 
-variables (solar radiation, reference evapotranspiration, precipitation, 
-aridity index) using different machine learning models.
+variables (solar radiation, reference evapotranspiration, precipitation) using different machine learning models.
 
 ---
 
