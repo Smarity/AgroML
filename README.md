@@ -23,7 +23,7 @@ modeling and automated feature selection. Focusing on the main issues of
 
 ## Installing AgroML
 
-You can install AgroML with pip: `pip install agroml`
+You can install AgroML with pip: `pip install agroml` (in process)
 
 ## Minimal Example
 
