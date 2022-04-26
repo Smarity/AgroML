@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+agroml/__init__.py
+agroml.egg-info/PKG-INFO
+agroml.egg-info/SOURCES.txt
+agroml.egg-info/dependency_links.txt
+agroml.egg-info/requires.txt
+agroml.egg-info/top_level.txt
