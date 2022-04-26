@@ -23,8 +23,8 @@ def splitDataByStation( df, stationsTrainList, stationTest, varListInputs, varLi
 
     outputs: 
         xTrain (np.array) - shape(batchTrain, 1, nFeaturesInput)
-        yTrain (np.array) - shape(batchTrain, 1, nFeaturesOutput)
-        xTest (np.array) - shape(batchTest, nFeaturesInput)
+        xTest (np.array) - shape(batchTrain, 1, nFeaturesInput)
+        yTrain (np.array) - shape(batchTest, nFeaturesOutput)
         yTest (np.array) - shape(batchTest, nFeaturesOutput)
     """
     # errors
