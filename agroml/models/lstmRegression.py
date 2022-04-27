@@ -1,3 +1,4 @@
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras import layers, Model, Input
@@ -121,7 +122,7 @@ class LongShortTermMemory:
         model = load_model(fileName)
         return model
         
-    def savePredictions(self, yPred, yTest):
+    def savePredictions(self, yPred, yTest, fileName):
         """
         It saves the predictions values of a model
 
@@ -143,7 +144,7 @@ class LongShortTermMemory:
             dfPredictions["pred_{}".format(i)] = yPred[:, i]
             dfPredictions["meas_{}".format(i)] = yTest[:, i]
 
-        dfPredictions.to_csv(str(nameFile)+".csv")
+        dfPredictions.to_csv(str(fileName)+".csv")
 
         
     def trainFullTrainingData(

@@ -109,19 +109,15 @@ class ExtremeLearningMachine:
         model = model.load(fileName)
         return model
 
-    def savePredictions(self, yPred, yTest):
+    def savePredictions(self, yPred, yTest, fileName):
         """
         It saves the predictions values of a model
-
         Arguments:
             yPred {array} - Array with the predictions. The shape must be
                 (batch, number of output features)
-
             yTest {array} - Array with the measured values. The shape must be
                 (batch, number of output features)
-
             fileName {str} - file name to save model (with extension)
-
         Output:
             None
         """
@@ -131,7 +127,7 @@ class ExtremeLearningMachine:
             dfPredictions["pred_{}".format(i)] = yPred[:, i]
             dfPredictions["meas_{}".format(i)] = yTest[:, i]
 
-        dfPredictions.to_csv(str(nameFile)+".csv")
+        dfPredictions.to_csv(str(fileName)+".csv")
         
     def trainFullTrainingData(
         self, 

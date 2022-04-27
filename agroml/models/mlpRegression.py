@@ -1,3 +1,4 @@
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras import layers, Model, Input
@@ -118,11 +119,24 @@ class MultiLayerPerceptron:
         return model
 
     def savePredictions(self, yPred, yTest, fileName):
-        root
+        """
+        It saves the predictions values of a model
+        Arguments:
+            yPred {array} - Array with the predictions. The shape must be
+                (batch, number of output features)
+            yTest {array} - Array with the measured values. The shape must be
+                (batch, number of output features)
+            fileName {str} - file name to save model (with extension)
+        Output:
+            None
+        """
+        dfPredictions = pd.DataFrame()
 
-        for i in range(yPred.shape[1]):
+        for i in range(self.nOutputs):
+            dfPredictions["pred_{}".format(i)] = yPred[:, i]
+            dfPredictions["meas_{}".format(i)] = yTest[:, i]
 
-        
+        dfPredictions.to_csv(str(fileName)+".csv")  
         
     def trainFullTrainingData(
         self, 
