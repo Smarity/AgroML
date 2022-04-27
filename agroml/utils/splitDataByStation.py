@@ -60,10 +60,10 @@ def splitDataByStation( df, stationsTrainList, stationTest, varListInputs, varLi
     else:
         scaler ='none'
 
-    xTrain = xTrain.transpose().reshape(len(dfStationTrain), 1, len(varListInputs))
-    xTest = xTest.transpose().reshape(len(dfStationTest), 1, len(varListInputs))
-    yTrain = yTrain.transpose().reshape(len(dfStationTrain), len(varListOutputs))
-    yTest = yTest.transpose().reshape(len(dfStationTest), len(varListOutputs))
+    xTrain = xTrain.reshape(len(dfStationTrain), 1, len(varListInputs))
+    xTest = xTest.reshape(len(dfStationTest), 1, len(varListInputs))
+    yTrain = yTrain.reshape(len(dfStationTrain), len(varListOutputs))
+    yTest = yTest.reshape(len(dfStationTest), len(varListOutputs))
     
     return xTrain, xTest, yTrain, yTest, scaler
 
