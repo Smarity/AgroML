@@ -4,6 +4,7 @@ import os
 import pytest
 import pandas as pd
 import numpy as np
+from icecream import ic
 from agroml.utils.splitDataByYear import splitDataByYear
 
 def test_dimensionsFromTrainAndTest():
@@ -61,7 +62,7 @@ def test_checkStandardizationMeanAndStd():
         varListInputs=varListInputs, 
         varListOutputs=varListOutputs
     )
-    xTrain2, xTest2, yTrain2, yTest2 = splitDataByYear(
+    xTrain2, xTest2, yTrain2, yTest2, scaler = splitDataByYear(
         df=df,
         station=uniqueStations[-1], 
         yearTestStart=uniqueYears[-1], 
@@ -94,8 +95,30 @@ def test_checkMinMaxScalerValues():
     
     assert np.max(xTrain) == 1.0
 
+def test_dataDistribution():
+    df = pd.read_csv('tests/test-data/data-example.csv', sep=';')
+    uniqueStations = np.unique(df['station'])
+    uniqueYears = np.unique(df['year'])
 
     
+    varListInputs=['tx', 'tn', 'rs']
+    varListOutputs=[ 'et0']
+    xTrain, xTest, yTrain, yTest, scaler = splitDataByYear(
+        df=df,
+        station=uniqueStations[-1], 
+        yearTestStart=uniqueYears[-1], 
+        varListInputs=varListInputs, 
+        varListOutputs=varListOutputs,
+        preprocessing='none'
+    )
+    dfStation = df[df['station']==uniqueStations[-1]]
+    dfStation.reset_index(drop=True, inplace=True)
+
+    assert dfStation["tx"][0] == xTrain[0,0,0]
+    assert dfStation["tn"][0] == xTrain[0,0,1]
+    assert dfStation["rs"][0] == xTrain[0,0,2]
+    assert dfStation["et0"][0] == yTrain[0,0]
+
 
 
 # %%

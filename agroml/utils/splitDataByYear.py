@@ -77,6 +77,6 @@ def splitDataByYear(
     xTrain = xTrain.reshape(len(dfStationTrain), 1, len(varListInputs))
     xTest = xTest.reshape(len(dfStationTest), 1, len(varListInputs))
     yTrain = yTrain.reshape(len(dfStationTrain), len(varListOutputs))
-    yTest = yTest.transpose().reshape(len(dfStationTest), len(varListOutputs))
+    yTest = yTest.reshape(len(dfStationTest), len(varListOutputs))
 
     return xTrain, xTest, yTrain, yTest, scaler
