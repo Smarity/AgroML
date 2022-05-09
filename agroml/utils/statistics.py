@@ -95,7 +95,7 @@ def getMeanAbsoluteError(measValues, predValues):
     maeList = list()
     for i in range(nOutputs):
         delta = predValues[:, i] - measValues[:, i]
-        maeList.append(np.abs(delta)/predValues.shape[0])
+        maeList.append(np.sum(np.abs(delta))/predValues.shape[0])
         
     return np.array(maeList)
 

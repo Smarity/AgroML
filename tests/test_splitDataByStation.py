@@ -94,4 +94,29 @@ def test_checkMinMaxScalerValues():
     )
     
     assert np.max(xTrain) == 1.0
+
+def test_dataDistribution():
+    df = pd.read_csv('tests/test-data/data-example.csv', sep=';')
+    uniqueStations = np.unique(df['station'])
+
+    stationsTrainList=uniqueStations[:-1]
+    stationTest=uniqueStations[-1]
+    varListInputs=['tx', 'tn', 'rs']
+    varListOutputs=[ 'et0']
+    xTrain, xTest, yTrain, yTest, scaler = splitDataByStation(
+        df=df,
+        stationsTrainList=stationsTrainList, 
+        stationTest=stationTest, 
+        varListInputs=varListInputs, 
+        varListOutputs=varListOutputs,
+        preprocessing='none'
+    )
+
+    dfStation = df[df['station'].isin(stationsTrainList)]
+    dfStation.reset_index(drop=True, inplace=True)
+
+    assert dfStation["tx"][0] == xTrain[0,0,0]
+    assert dfStation["tn"][0] == xTrain[0,0,1]
+    assert dfStation["rs"][0] == xTrain[0,0,2]
+    assert dfStation["et0"][0] == yTrain[0,0]
 # %%
