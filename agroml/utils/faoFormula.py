@@ -98,7 +98,7 @@ def getAtmosphericPressure(altitude):
     return float(pressure)
 
 
-def Calc_SaturationSlope(Tmax, Tmin):
+def getSaturationSlope(Tmax, Tmin):
     '''
     Calculation of the slope of the saturation vapour pressure [kPa/ºC]
 
