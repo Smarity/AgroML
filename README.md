@@ -1,4 +1,4 @@
-![AgroML logo](https://github.com/openml-labs/gama/blob/master/images/logos/Logo-With-Grey-Name-Transparent.png)
+![AgroML logo](https://github.com/Smarity/AgroML/blob/main/agroml/images/smarityLogo.png)
 
 **Agro**nomy **M**achine **L**earning 
 An easy tool for developing estimations and forecasts of agro-meteorological 
