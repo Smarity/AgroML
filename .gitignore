@@ -1,3 +1,4 @@
 .idea
 agroml.egg-info
 build
+dist
