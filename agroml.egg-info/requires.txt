@@ -1,9 +1,0 @@
-icecream
-hpelm
-pandas
-pytest
-tensorflow
-scikit_optimize
-matplotlib
-numpy
-scikit_learn

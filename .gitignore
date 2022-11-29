@@ -1,3 +1,3 @@
-data/
-results/
-main.py
+.idea
+agroml.egg-info
+build
