@@ -2,3 +2,6 @@
 agroml.egg-info
 build
 dist
+agroml/__pycache__
+tests/__pycache__
+.pytest_cache
