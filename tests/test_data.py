@@ -38,3 +38,10 @@ def test_readDataCsv():
         ic(data.columnNamesList)
         ic(variableList)
         assert data.columnNamesList == variableList
+        
+def test_filterData():
+    data = Data("tests/testData/dataExample.csv")
+    dataFiltered = data.filterFeatures(variableList = ["tx", "tm", "tn"])
+    assert dataFiltered.shape[1] == 3
+    assert list(dataFiltered.columns) == ["tx", "tm", "tn"]
+    assert dataFiltered.shape[0] == data.shape[0]

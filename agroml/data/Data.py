@@ -1,20 +1,15 @@
 import os
 
 import pandas as pd
+from icecream import ic
 
 class Data:
 
     def __init__(self, fileLocation:str):
         self.fileLocation = fileLocation
-
         assert self._doesFileExists()
 
-        # read the data into a pandas dataframe
-        if self._getFileExtension() in set([".xls", ".xlsx"]):
-            self.readDataExcel()
-        else: 
-            self.readDataCsv()
-
+        self.data = self._readData()
         # get attributes from data
         self.columnNamesList = list(self.data.columns)
         self.nColumns = self.data.shape[1]
@@ -26,18 +21,39 @@ class Data:
     def _getFileExtension(self) -> str:
         return os.path.splitext(self.fileLocation)[-1]
 
-    def readDataExcel(self) -> pd.DataFrame:
-        self.data = pd.read_excel(self.fileLocation)
+    def _readData(self) -> pd.DataFrame:
+        # read the data into a pandas dataframe
+        if self._getFileExtension() in set([".xls", ".xlsx"]):
+            data = self._readDataExcel()
+        else: 
+            data = self._readDataCsv()
+        return data
+
+    def _readDataExcel(self) -> pd.DataFrame:
+        return pd.read_excel(self.fileLocation)
         
-        
-    def readDataCsv(self) -> pd.DataFrame:
+    def _readDataCsv(self) -> pd.DataFrame:
         for sep in [",", ";", r"\s+"]: # r"\s+" must be written this way not to give a warning
-            self.data = pd.read_csv(self.fileLocation, sep=sep)
-            self.nColumns = self.data.shape[1]
-            if self.nColumns > 1:
+            data = pd.read_csv(self.fileLocation, sep=sep)
+            nColumns = data.shape[1]
+            if nColumns > 1:
                 break
         else:
             # the r"" (raw string) is used in the message because \s+ gives a warning
             assert(True, r"""Please, use any of the following separators [",", ";", "\s+"]""")
+        return data
 
+    # Note: Not implemented yet
+    def __repr__(self) -> str:
+        pass
 
+    # Note: Not implemented yet
+    def __str__(self) -> str:
+        pass
+
+    def filterFeatures(self, variableList:list) -> pd.DataFrame:
+        return self.data.filter(items=variableList)
+
+    @property
+    def shape(self) -> tuple:
+        return self.data.shape
