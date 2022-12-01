@@ -2,12 +2,12 @@ import os
 
 from icecream import ic
 
-from agroml.data import InputData
+from agroml.data import Data
 
 def test_errorForNullFile():
 
     try:
-        inputData = InputData("nullFile.csv")
+        data = Data("nullFile.csv")
     except Exception as error:
         assert True
     
@@ -22,8 +22,8 @@ def test_getCorrectFileExtension():
         ".csv", ".xls", ".txt"
     ]
     for file, extension in zip(inputFilesList, fileExtensionList):
-        inputData = InputData(file)
-        assert inputData._getFileExtension() == extension
+        data = Data(file)
+        assert data._getFileExtension() == extension
     
 def test_readDataCsv():
     allDataFiles = os.listdir("tests/testData")
@@ -33,8 +33,8 @@ def test_readDataCsv():
     ]
 
     for file in allDataFiles:
-        inputData = InputData("tests/testData/" + file)
-        assert inputData.nColumns == len(variableList)
-        ic(inputData.columnNamesList)
+        data = Data("tests/testData/" + file)
+        assert data.nColumns == len(variableList)
+        ic(data.columnNamesList)
         ic(variableList)
-        assert inputData.columnNamesList == variableList
+        assert data.columnNamesList == variableList

@@ -1,4 +1,4 @@
-from agroml.data import InputData, ModelData
+from agroml.data import Data, ModelData
 
 
 def test_defineInputsAndOutputsFromInputData():
@@ -6,8 +6,8 @@ def test_defineInputsAndOutputsFromInputData():
     modelData = ModelData(inputData)
 
 def importDataExampleCsv():
-    inputData = InputData("tests/testData/dataExample.csv")
-    return inputData
+    data = Data("tests/testData/dataExample.csv")
+    return data
 
 def test_defineVariablesNonInColumns():
     pass

@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-class InputData:
+class Data:
 
     def __init__(self, fileLocation:str):
         self.fileLocation = fileLocation
