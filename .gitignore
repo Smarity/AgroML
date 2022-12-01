@@ -8,3 +8,4 @@ agroml/models/__pycache__
 agroml/utils/__pycache__
 tests/__pycache__
 .pytest_cache
+.gitconfig
