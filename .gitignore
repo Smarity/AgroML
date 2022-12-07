@@ -2,10 +2,6 @@
 agroml.egg-info
 build
 dist
-agroml/__pycache__
-agroml/data/__pycache__
-agroml/models/__pycache__
-agroml/utils/__pycache__
-tests/__pycache__
 .pytest_cache
 .gitconfig
+*__pycache__*
