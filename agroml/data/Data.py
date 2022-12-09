@@ -14,7 +14,6 @@ class Data:
         self.columnNamesList = list(self.data.columns)
         self.nColumns = self.data.shape[1]
 
-
     def _doesFileExists(self) -> bool:
         return os.path.exists(self.fileLocation)
 
@@ -57,3 +56,7 @@ class Data:
     @property
     def shape(self) -> tuple:
         return self.data.shape
+
+    @property
+    def pandasDataFrame(self) -> pd.DataFrame:
+        return self.data
