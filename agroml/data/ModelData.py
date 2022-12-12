@@ -30,7 +30,7 @@ class ModelData():
 
         # if not all features exist, raise a warning and update the features lists
         if not(self._checkAllFeaturesExist()):
-            warnings.warn(UserWarning("Some features do not exist in the data"))
+            warnings.warn("Some features do not exist in the data",UserWarning)
             self._updateFeaturesLists()
 
         self._errorNoInputOrOutputFeatures()
@@ -63,6 +63,7 @@ class ModelData():
         return True
 
     def _updateFeaturesLists(self):
+        ic(self.inputData.columns)
         self.inputList = list(self.inputData.columns)
         self.outputList = list(self.outputData.columns)
         self.allFeaturesList = self.inputList + self.outputList
@@ -116,7 +117,7 @@ class ModelData():
 
 
     # To be implemented:
-    #   - Not two normalization for data
+    #   - Avoid two normalization for data
     def normalizeData(self, method:str="StandardScaler"):
         """ It normalizes the data in the dataTrain and dataTest
 
@@ -151,7 +152,7 @@ class ModelData():
             The path to save the scaler
         """
         if not(hasattr(self, "_scaler")):
-            warnings.warn(UserWarning("You have to normalize the data before saving the scaler. The default normalization has been used"))
+            warnings.warn("You have to normalize the data before saving the scaler. The default normalization has been used", UserWarning)
             self.normalizeData()
 
         self._scalerPath = path

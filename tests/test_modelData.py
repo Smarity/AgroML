@@ -12,11 +12,11 @@ def test_filterInputsOutputs():
 
     inputLists = [
         ["tx", "tm", "tn"],
-        ["tx", "tm", "weirdFeature"]
+        ["tx", "tm"]
     ]
     outputLists = [
         ["et0", "rs"],
-        ["et0", "weirdFeature"]
+        ["et0"]
     ]
 
     for inputList, outputList in zip(inputLists, outputLists):
@@ -26,23 +26,25 @@ def test_filterInputsOutputs():
         assert modelData.outputData.shape[1] == len(modelData.outputList)
         assert modelData.inputData.shape[0] == modelData.outputData.shape[0]
 
-@pytest.mark.xfail()
 def test_noInputFeatureInData():
     data = Data("tests/testData/dataExample.csv")
 
     inputList = ["txx", "tmm", "tnn"] # no input exists
-    outputList = ["et0", "rs"], # all exist
+    outputList = ["et0", "rs"] # all exist
 
-    modelData = ModelData(data, inputList, outputList)
+    with pytest.warns(UserWarning):
+        modelData = ModelData(data, inputList, outputList)
+        warnings.warn("Some features*", UserWarning)
 
-@pytest.mark.xfail()
 def test_noOutputFeatureInData():
     data = Data("tests/testData/dataExample.csv")
 
     inputList = ["tx", "tm", "tn"] # no input exists
     outputList = ["et000"]
 
-    modelData = ModelData(data, inputList, outputList)
+    with pytest.warns(UserWarning):
+        modelData = ModelData(data, inputList, outputList)
+        warnings.warn("Some features*", UserWarning)
 
 def test_splitToTrainTestRandom():
     data = Data("tests/testData/dataExample.csv")
@@ -124,4 +126,20 @@ def test_saveScaler():
         if os.path.exists(path): # remove again
             os.remove(path)
 
+def test_avoidTwoNormalizations():
+    pass
+
+def test_tryToSaveScalerWithoutNormalization():
+    data = Data("tests/testData/dataExample.csv")
+
+    inputList = ["tx", "tm", "rs"]
+    outputList = ["et0"]
+
+    modelData = ModelData(data, inputList, outputList)
+    modelData.splitToTrainTest() # It splist using the random function
+
+    for method in ["StandardScaler", "MinMaxScaler"]:
+        with pytest.warns(UserWarning):
+            modelData.saveScaler(path="tests/testScaler/scalerModelDataTest.pkl")
+            warnings.warn("You have to*", UserWarning)
     
