@@ -70,5 +70,5 @@ class Scaler(ABC):
         dump(self.scaler, open(path, "wb"))
 
 
-    
+
 

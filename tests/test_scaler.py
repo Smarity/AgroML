@@ -59,7 +59,7 @@ def test_loadingScaler():
     except:
         assert False
 
-@pytest.mark.filterwarnings("ignore: The scaler does not exist")
+#@pytest.mark.filterwarnings("ignore: The scaler does not exist")
 def test_loadingNonExistentScaler():
     global xTrain, xTest, yTrain, yTest
 
