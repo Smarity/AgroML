@@ -4,11 +4,10 @@ from typing import Optional
 import pytest
 import pandas as pd
 from icecream import ic
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 from agroml.data import Data
 from agroml.preprocessing import SplitRandom, SplitSequentially, SplitByYear, SplitByStation
-from agroml.preprocessing import Scaler
+from agroml.preprocessing import StandardScaler, MinMaxScaler
 
 class ModelData():
     """ 
@@ -132,14 +131,9 @@ class ModelData():
             self.splitToTrainTest()
 
         if "Standard" or "standard" in method:
-            self._scalerMethod = StandardScaler()
+            self._scaler = StandardScaler(xTrain = self._xTrain)
         else:
-            self._scalerMethod = MinMaxScaler()
-
-        ic(self.data)
-        ic(self._xTrain)
-        ic(type(self._xTrain))
-        self._scaler = Scaler(xTrain = self._xTrain, scaler=self._scalerMethod)
+            self._scaler = MinMaxScaler(xTrain = self._xTrain)
 
         self._scaler.fit() # Not needed, anyway
         self._xTrain = self._scaler.transform(self._xTrain)
@@ -160,6 +154,7 @@ class ModelData():
             warnings.warn(UserWarning("You have to normalize the data before saving the scaler. The default normalization has been used"))
             self.normalizeData()
 
+        self._scalerPath = path
         self._scaler.save(path)
     
 

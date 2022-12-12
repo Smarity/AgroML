@@ -109,16 +109,19 @@ def test_saveScaler():
     modelData = ModelData(data, inputList, outputList)
     modelData.splitToTrainTest() # It splist using the random function
 
-    path = "tests/testData/scalerModelDataTest.pkl"
+    path = "tests/testScaler/scalerModelDataTest.pkl"
     if os.path.exists(path):
         os.remove(path)
 
     for method in ["StandardScaler", "MinMaxScaler"]:
         modelData.normalizeData(method = method)
-        modelData.saveScaler(path="tests/testData/scalerModelDataTest.pkl")
+        modelData.saveScaler(path="tests/testScaler/scalerModelDataTest.pkl")
 
-        assert modelData.scaler is not None
-        assert modelData.scalerPath == "tests/testData/scalerModelDataTest.pkl"
+        assert modelData._scaler is not None
+        assert modelData._scalerPath == "tests/testScaler/scalerModelDataTest.pkl"
         assert os.path.exists(path)
+
+        if os.path.exists(path): # remove again
+            os.remove(path)
 
     
