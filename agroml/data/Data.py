@@ -44,11 +44,26 @@ class Data:
 
     # Note: Not implemented yet
     def __repr__(self) -> str:
-        pass
+        Output= """
+            "fileLocation": {},
+            "nColumns": {},
+            "nRows": self.data.shape[0],
+            "columnNamesList": {},
+            "data.head()": {},
+            """.format(self.fileLocation, self.nColumns, self.columnNamesList, self.data.head())
+
+        return Output
 
     # Note: Not implemented yet
     def __str__(self) -> str:
-        pass
+        Output = {
+            "fileLocation": self.fileLocation,
+            "nColumns": self.nColumns,
+            "nRows": self.data.shape[0],
+            "columnNamesList": self.columnNamesList,
+            "data.head()": self.data.head(),
+        }
+        return str(Output)
 
     def filterFeatures(self, variableList:list) -> pd.DataFrame:
         return self.data.filter(items=variableList)
