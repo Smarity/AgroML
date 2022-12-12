@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 from agroml.data import Data
 from agroml.preprocessing import SplitRandom, SplitSequentially, SplitByYear, SplitByStation
+from agroml.preprocessing import Scaler
 
 class ModelData():
     """ 
@@ -114,6 +115,9 @@ class ModelData():
         self._xTrain, self._yTrain = self.defineInputAndOutputData(self._dataTrain)
         self._xTest, self._yTest = self.defineInputAndOutputData(self._dataTest)
 
+
+    # To be implemented:
+    #   - Not two normalization for data
     def normalizeData(self, method:str="StandardScaler"):
         """ It normalizes the data in the dataTrain and dataTest
 
@@ -123,20 +127,40 @@ class ModelData():
             The method to normalize the data ["StandardScaler", "MinMaxScaler"], by default "StandardScaler"
         """
         # If the data has not been split, we split it in the default way
-        if not(hasattr(self, "_dataTrainPandas")):
+        if not(hasattr(self, "_dataTrain")):
             warnings.warn(UserWarning("You have to split the data before normalizing it. The default split has been used"))
             self.splitToTrainTest()
 
-        if method == "StandardScaler":
-            self._scaler = StandardScaler()
+        if "Standard" or "standard" in method:
+            self._scalerMethod = StandardScaler()
         else:
-            self._scaler = MinMaxScaler()
+            self._scalerMethod = MinMaxScaler()
 
-        self._xTrain = self._scaler.fit_transform(self._xTrain)
+        ic(self.data)
+        ic(self._xTrain)
+        ic(type(self._xTrain))
+        self._scaler = Scaler(xTrain = self._xTrain, scaler=self._scalerMethod)
+
+        self._scaler.fit() # Not needed, anyway
+        self._xTrain = self._scaler.transform(self._xTrain)
         self._xTrain = pd.DataFrame(self._xTrain, columns=self.inputList)
 
         self._xTest = self._scaler.transform(self._xTest)
-        self._xTest = pd.DataFrame(self._xTest, columns=self.inputList)
+        self._xTest = pd.DataFrame(self._xTest, columns=self.inputList)        
+
+    def saveScaler(self, path:str):
+        """ It saves the scaler
+
+        Parameters
+        ----------
+        path : str
+            The path to save the scaler
+        """
+        if not(hasattr(self, "_scaler")):
+            warnings.warn(UserWarning("You have to normalize the data before saving the scaler. The default normalization has been used"))
+            self.normalizeData()
+
+        self._scaler.save(path)
     
 
     @property
@@ -172,7 +196,7 @@ class ModelData():
             The denormalized data if the data has been normalized before
         """
         if hasattr(self, "_scaler"):
-            output = pd.DataFrame(self._scaler.inverse_transform(dataFrame), columns=dataFrame.columns)
+            output = pd.DataFrame(self._scaler.inverseTranform(dataFrame), columns=dataFrame.columns)
             return output
         return dataFrame
 

@@ -36,13 +36,13 @@ class Scaler(ABC):
     def fit(self):
         self.scaler = self.scaler.fit(self.xTrain)
 
-    def transform(self, data) -> pd.DataFrame:
-        dataScaled = self.scaler.transform(data)
-        dataScaled = pd.DataFrame(dataScaled, columns=self.xTrain.columns)
-        return dataScaled
+    def transform(self, dataframe:pd.DataFrame) -> pd.DataFrame:
+        dataframeScaled = self.scaler.transform(dataframe)
+        dataframeScaled = pd.DataFrame(dataframeScaled, columns=self.xTrain.columns)
+        return dataframeScaled
 
     def inverseTranform(self, dataScaled) -> pd.DataFrame:
-        data = self.scaler.inverseTranform(dataScaled)
+        data = self.scaler.inverse_transform(dataScaled)
         data = pd.DataFrame(data, columns=self.xTrain.columns)
         return data
 

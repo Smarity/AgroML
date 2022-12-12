@@ -1,4 +1,5 @@
 import warnings
+import os
 
 import pytest
 import pandas as pd
@@ -46,7 +47,7 @@ def test_noOutputFeatureInData():
 def test_splitToTrainTestRandom():
     data = Data("tests/testData/dataExample.csv")
 
-    inputList = ["tx", "tm", "ra"]
+    inputList = ["tx", "tm", "rs"]
     outputList = ["et0"]
 
     modelData = ModelData(data, inputList, outputList)
@@ -63,7 +64,7 @@ def test_splitToTrainTestRandom():
 def test_splitToTrainTestSequentially():
     data = Data("tests/testData/dataExample.csv")
 
-    inputList = ["tx", "tm", "ra"]
+    inputList = ["tx", "tm", "rs"]
     outputList = ["et0"]
 
     modelData = ModelData(data, inputList, outputList)
@@ -81,13 +82,14 @@ def test_splitToTrainTestByYear():
 def test_splitToTrainTestByStation():
     pass
 
-def test_normalizeDataReturnsPandasDAtaFrame():
+def test_normalizeDataReturnsPandasDataFrame():
     data = Data("tests/testData/dataExample.csv")
 
-    inputList = ["tx", "tm", "ra"]
+    inputList = ["tx", "tm", "rs"]
     outputList = ["et0"]
 
     modelData = ModelData(data, inputList, outputList)
+    modelData.splitToTrainTest() # It splist using the random function
 
     for method in ["StandardScaler", "MinMaxScaler"]:
         modelData.normalizeData(method = method)
@@ -98,6 +100,25 @@ def test_normalizeDataReturnsPandasDAtaFrame():
         assert isinstance(modelData._xTest, pd.DataFrame)
         assert isinstance(modelData.xTest, pd.DataFrame)
 
+def test_saveScaler():
+    data = Data("tests/testData/dataExample.csv")
 
+    inputList = ["tx", "tm", "rs"]
+    outputList = ["et0"]
+
+    modelData = ModelData(data, inputList, outputList)
+    modelData.splitToTrainTest() # It splist using the random function
+
+    path = "tests/testData/scalerModelDataTest.pkl"
+    if os.path.exists(path):
+        os.remove(path)
+
+    for method in ["StandardScaler", "MinMaxScaler"]:
+        modelData.normalizeData(method = method)
+        modelData.saveScaler(path="tests/testData/scalerModelDataTest.pkl")
+
+        assert modelData.scaler is not None
+        assert modelData.scalerPath == "tests/testData/scalerModelDataTest.pkl"
+        assert os.path.exists(path)
 
     
