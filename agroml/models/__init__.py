@@ -1,5 +1,5 @@
-from .RegressionModel import RegressionModel
+from .Model import Model
 
 __all__ = [
-    "RegressionModel",
+    "Model",
 ]

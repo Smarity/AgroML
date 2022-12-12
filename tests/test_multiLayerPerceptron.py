@@ -1,6 +1,6 @@
 
 from agroml.data import Data, ModelData
-from agroml.models import MultiLayerPerceptron
+from agroml.models.regressionModels import MultiLayerPerceptron
 
 
 rawdata = Data("tests/testData/dataExample.csv")

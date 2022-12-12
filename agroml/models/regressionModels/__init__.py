@@ -1,5 +1,5 @@
-from .MultiLayerPerceptroRegression import MultiLayerPerceptroRegression
+from .MultiLayerPerceptroRegression import MultiLayerPerceptron
 
 __all__ = [
-    "MultiLayerPerceptroRegression",
+    "MultiLayerPerceptron",
 ]

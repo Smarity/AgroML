@@ -3,7 +3,7 @@ from typing import Optional
 
 from agroml.data import ModelData
 
-class RegressionModel(ABC):
+class Model(ABC):
     def __init__(self, modelData:ModelData):
         self.modelData = modelData
     
