@@ -100,9 +100,14 @@ class StandardScaler(Scaler):
         dump(self.scaler, open(path, "wb"))
 
     def getParams(self):
-        return self.scaler.get_params()
-        
+        return self.__str__()
 
+    def __repr__(self):
+        return self.__str__()
+    
+    def __str__(self):
+        output = "StandardScaler(mean={}, std={})".format(self.scaler.mean_, self.scaler.scale_)
+        return output
 
 class MinMaxScaler(StandardScaler):
     def __init__(
@@ -167,6 +172,13 @@ class MinMaxScaler(StandardScaler):
         dump(self.scaler, open(path, "wb"))
 
     def getParams(self):
-        return self.scaler.get_params()
+        return self.__str__()
+
+    def __repr__(self):
+        return self.__str__()
+    
+    def __str__(self):
+        output = "StandardScaler(min={}, max={})".format(self.scaler.data_min_, self.scaler.data_max_)
+        return output
 
 

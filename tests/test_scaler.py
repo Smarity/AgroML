@@ -18,8 +18,8 @@ yTest = dfData.filter(items=["et0"]).iloc[lenTrain:]
 def test_normalizeDataReturnsPandasDAtaFrame():
     global xTrain, xTest, yTrain, yTest
 
-    for method in [StandardScaler, MinMaxScaler]:
-        scaler = method(xTrain)
+    for scaler in [StandardScaler, MinMaxScaler]:
+        scaler = scaler(xTrain)
         xTrainScaled = scaler.transform(xTrain)
         xTestScaled = scaler.transform(xTest)
 
@@ -68,3 +68,17 @@ def test_loadingNonExistentScaler():
     except:
         assert True
 
+# Not implemented yet
+def test_loadingTheIncorrectScaler():
+    pass
+
+def test_getParams():
+    global xTrain, xTest, yTrain, yTest
+
+    scaler = StandardScaler(xTrain)
+    scaler.save("tests/testScaler/scaler")
+
+    for scaler in [StandardScaler, MinMaxScaler]:
+        scaler = scaler(xTrain)
+        ic(scaler.getParams())
+        assert scaler.getParams() == scaler.__str__()
