@@ -117,9 +117,7 @@ class ModelData():
         self._xTest, self._yTest = self.defineInputAndOutputData(self._dataTest)
 
 
-    # To be implemented:
-    #   - Avoid two normalization for data
-    @doNotRunItTwice
+    #@doNotRunItTwice
     def normalizeData(self, method:str="StandardScaler"):
         """ It normalizes the data in the dataTrain and dataTest
 
@@ -138,7 +136,7 @@ class ModelData():
         else:
             self._scaler = MinMaxScaler(xTrain = self._xTrain)
 
-        self._scaler.fit() # Not needed, anyway
+        self._scaler.fit() # Not needed, anyway. But it is clearer this way
         self._xTrain = self._scaler.transform(self._xTrain)
         self._xTrain = pd.DataFrame(self._xTrain, columns=self.inputList)
 

@@ -126,6 +126,7 @@ def test_saveScaler():
         if os.path.exists(path): # remove again
             os.remove(path)
 
+# I don't know how to test this
 def test_avoidTwoNormalizations():
     pass
 
