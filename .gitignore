@@ -5,4 +5,4 @@ dist
 .pytest_cache
 .gitconfig
 *__pycache__*
-agroml/utils/__pycache__*
+agroml/utils/__pycache__
