@@ -44,7 +44,7 @@ def test_savingScaler():
         os.remove(path)
 
     scaler = Scaler(xTrain, scaler = StandardScaler())
-    scaler.saveScaler("tests/testScaler/scaler")
+    scaler.save("tests/testScaler/scaler")
 
     assert os.path.exists("tests/testScaler/scaler.pkl")
 

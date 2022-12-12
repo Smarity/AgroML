@@ -23,7 +23,7 @@ class Scaler(ABC):
         self.scaler = scaler
 
         if path is not None and self._doesScalerExists(path):
-            self.loadScaler(path)
+            self.load(path)
         elif path is not None and not(self._doesScalerExists(path)):
             warnings.warn(UserWarning("The scaler does not exist"))
             self.fit()
