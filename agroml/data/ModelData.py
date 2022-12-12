@@ -8,6 +8,7 @@ from icecream import ic
 from agroml.data import Data
 from agroml.preprocessing import SplitRandom, SplitSequentially, SplitByYear, SplitByStation
 from agroml.preprocessing import StandardScaler, MinMaxScaler
+from agroml.utils import doNotRunItTwice
 
 class ModelData():
     """ 
@@ -118,6 +119,7 @@ class ModelData():
 
     # To be implemented:
     #   - Avoid two normalization for data
+    @doNotRunItTwice
     def normalizeData(self, method:str="StandardScaler"):
         """ It normalizes the data in the dataTrain and dataTest
 
