@@ -11,16 +11,16 @@ from agroml.preprocessing import Scaler
 dfData = pd.read_csv("tests/testData/dataExample.csv", sep=";")
 
 lenTrain = int(0.8*len(dfData))
-xTrain = dfData.filter(items=["tx", "tm", "ra"]).iloc[:lenTrain]
-xTest = dfData.filter(items=["tx", "tm", "ra"]).iloc[lenTrain:]
+xTrain = dfData.filter(items=["tx", "tm", "rs"]).iloc[:lenTrain]
+xTest = dfData.filter(items=["tx", "tm", "rs"]).iloc[lenTrain:]
 yTrain = dfData.filter(items=["et0"]).iloc[:lenTrain]
 yTest = dfData.filter(items=["et0"]).iloc[lenTrain:]
 
 def test_normalizeDataReturnsPandasDAtaFrame():
     global xTrain, xTest, yTrain, yTest
 
-    for method in ["StandardScaler", "MinMaxScaler"]:
-        scaler = Scaler(xTrain, scaler = StandardScaler())
+    for method in [StandardScaler(), MinMaxScaler()]:
+        scaler = Scaler(xTrain, scaler = method)
         xTrainScaled = scaler.transform(xTrain)
         xTestScaled = scaler.transform(xTest)
 
@@ -59,7 +59,7 @@ def test_loadingScaler():
     except:
         assert False
 
-#@pytest.mark.filterwarnings("ignore: The scaler does not exist")
+@pytest.mark.filterwarnings("ignore: The scaler does not exist")
 def test_loadingNonExistentScaler():
     global xTrain, xTest, yTrain, yTest
 
