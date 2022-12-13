@@ -1,12 +1,24 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from agroml.data import ModelData
 
-class Model(ABC):
+class MachineLearningModel(ABC):
     def __init__(self, modelData:ModelData):
         self.modelData = modelData
-    
+
+        self.featuresList = self.modelData.inputList
+        self.nFeatures = len(self.featuresList)
+        self.outputsList = self.modelData.outputList
+        self.nOutputs = len(self.outputsList)
+
+        self.xTrain = self.modelData.xTrain
+        self.xTest = self.modelData.xTest
+        self.yTrain = self.modelData.yTrain
+        self.yTest = self.modelData.yTest
+
+    def __str__():
+        pass
+
     @abstractmethod
     def buildModel(self):
         pass

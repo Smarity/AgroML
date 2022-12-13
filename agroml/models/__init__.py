@@ -1,4 +1,4 @@
-from .Model import MachineLearningModel
+from .MachineLearningModel import MachineLearningModel
 
 name = "agroml"
 
