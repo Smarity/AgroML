@@ -1,7 +1,7 @@
-from .Model import Model
+from .Model import MachineLearningModel
 
 name = "agroml"
 
 __all__ = [
-    "Model"
+    "MachineLearningModel"
 ]
