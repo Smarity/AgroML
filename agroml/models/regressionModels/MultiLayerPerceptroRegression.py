@@ -1,6 +1,8 @@
 from warnings import warn
 from typing import Optional
 
+import pandas as pd
+from matplotlib import pyplot as plt
 from tensorflow.keras import layers, Model, Input
 from tensorflow.keras.models import load_model
 
@@ -109,14 +111,43 @@ class MultiLayerPerceptron(MachineLearningModel):
             self.optimizer = "Adam"
             warn(UserWarning("The optimizer is not valid. The default optimizer will be used (Adam)"))
 
-    def train(self):
-        pass
+    def train(self, epochs:int, verbose:int=1):
+        """
+        Parameters:
+        ----------
+        epochs: int
+            Number of epochs to train the model
+        verbose: int, optional
+            Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
+        """
+        self.trainHistory=self.model.fit(
+            self.xTrain, 
+            self.yTrain, 
+            epochs=epochs,
+            verbose=verbose)
+            #callbacks = self.my_callback)
+
+    def plotTrainHistory(self):
+        plt.figure()
+        plt.plot(self.trainHistory.history['mae'])
+        plt.plot(self.trainHistory.history['loss'])
+        plt.legend(['MAE','MSE'])
+        plt.show()
 
     def optimizationAlgorithm(self):
         pass
 
     def predict(self):
-        pass
+        """ It predicts the output of the model using the test data
+
+        Returns:
+        ----------
+        yPred: array
+            Array with the predicted values
+        """
+        yPred = self.model.predict(self.xTest)
+        self.ypred = pd.DataFrame(yPred, columns=self.outputsList)
+        
 
     def saveModel(self, fileName:str) -> None:
         """
@@ -143,7 +174,7 @@ class MultiLayerPerceptron(MachineLearningModel):
         self.model = load_model(fileName)
 
         loadedArchitecture = self._getArchitectureFromLoadedModels()
-        
+
         self._saveArchitectureParametersAsAttributes(
             nHiddenLayers = loadedArchitecture["nHiddenLayers"], 
             neuronsPerLayerList = loadedArchitecture["neuronsPerLayerList"], 

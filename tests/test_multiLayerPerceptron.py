@@ -139,17 +139,48 @@ def test_loadModel():
     
     model2 = MultiLayerPerceptron(modelData)
     model2.buildModel()
-    model1.saveModel("tests/testModel/ModelMLP2.h5")
+    model2.saveModel("tests/testModel/ModelMLP2.h5")
 
     modelLoaded1 = MultiLayerPerceptron(modelData)
     modelLoaded1.loadModel("tests/testModel/ModelMLP1.h5")
     
 
-    assert isinstance(model2.model, TensorflowModel)
+    assert isinstance(modelLoaded1.model, TensorflowModel)
     assert model1 == modelLoaded1
     assert model2 != modelLoaded1
 
+def test_trainModel():
+    global modelData
 
+    model = MultiLayerPerceptron(modelData)
+    model.buildModel(
+        nHiddenLayers=2,
+        neuronsPerLayerList=[10,10],
+        activation="relu",
+        optimizer="Adam",
+    )
+    model.train(epochs=5, verbose=2)
+    model.plotTrainHistory()
+
+    assert model.trainHistory is not None
+
+def test_predict():
+    global modelData
+
+    model = MultiLayerPerceptron(modelData)
+    model.buildModel(
+        nHiddenLayers=2,
+        neuronsPerLayerList=[10,10],
+        activation="relu",
+        optimizer="Adam",
+    )
+
+    model.train(epochs=10, verbose=2)
+    model.predict()
+
+    model.plotTrainHistory()
+
+    assert False
 
 
 
