@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 from agroml.data import ModelData
 
 class MachineLearningModel(ABC):

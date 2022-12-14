@@ -1,3 +1,4 @@
+import os
 from warnings import warn
 from typing import Optional
 
@@ -35,6 +36,7 @@ class MultiLayerPerceptron(MachineLearningModel):
         else:
             return False
 
+    @saveModelWhenCalledIt
     def buildModel(
         self,
         nHiddenLayers: Optional[int] = 1,
@@ -79,7 +81,6 @@ class MultiLayerPerceptron(MachineLearningModel):
          
         self.model = Model(inputs, outputs)
         self.model.compile(self.optimizer, loss='mse', metrics=['mae'])
-
 
         self.allBuiltModelsList.append(self.model)
         return self.model
@@ -128,16 +129,27 @@ class MultiLayerPerceptron(MachineLearningModel):
             #callbacks = self.my_callback)
 
     def plotTrainHistory(self):
-        plt.figure()
+        """ It plots the train history of the model
+
+        Returns:
+        ----------
+        fig: matplotlib.figure.Figure
+            Figure with the train history
+        """
+        fig = plt.figure()
         plt.plot(self.trainHistory.history['mae'])
         plt.plot(self.trainHistory.history['loss'])
         plt.legend(['MAE','MSE'])
-        plt.show()
+        plt.xlabel('Epochs')
+        plt.ylabel('Error')
+        plt.title('Train History')
+
+        return fig
 
     def optimizationAlgorithm(self):
         pass
 
-    def predict(self):
+    def predict(self, xTest:Optional[pd.DataFrame]= None) -> pd.DataFrame:
         """ It predicts the output of the model using the test data
 
         Returns:
@@ -145,10 +157,14 @@ class MultiLayerPerceptron(MachineLearningModel):
         yPred: array
             Array with the predicted values
         """
-        yPred = self.model.predict(self.xTest)
-        self.ypred = pd.DataFrame(yPred, columns=self.outputsList)
-        
+        if xTest is None:
+            yPred = self.model.predict(self.xTest)
+        else:
 
+            yPred = self.model.predict(xTest)
+        self.yPred = pd.DataFrame(yPred, columns=self.outputsList)
+        
+    # In future may be using pickle
     def saveModel(self, fileName:str) -> None:
         """
         It saves the model in an specific location and name
@@ -163,7 +179,7 @@ class MultiLayerPerceptron(MachineLearningModel):
             fileName += '.h5'
         self.model.save(fileName)
 
-    def loadModel(self, fileName):
+    def loadModel(self, fileName:str) -> None:
         """ It loads a specific model 
 
         Parameters:
@@ -182,7 +198,7 @@ class MultiLayerPerceptron(MachineLearningModel):
             optimizer = loadedArchitecture["optimizer"])
          
 
-    def _getArchitectureFromLoadedModels(self):
+    def _getArchitectureFromLoadedModels(self) -> dict:
         architecture = dict()
         
         architecture["nHiddenLayers"] = len(self.model.layers) - 2
@@ -193,8 +209,29 @@ class MultiLayerPerceptron(MachineLearningModel):
         
         return architecture
 
-    def savePredictions(self):
-        pass
+    def savePredictions(self, fileName:str, sep:Optional[str]) -> None:
+        """It saves the predictions values of a model
+        
+        Parameters:
+        ----------
+        fileName: str
+            File name to save model (with extension)
+        """
+        dfPredictions = pd.DataFrame()
+
+        for output in range(self.nOutputs):
+            dfPredictions["pred_{}".format(output)] = self.yPred[output]
+            dfPredictions["meas_{}".format(output)] = self.yTest[output]
+
+        if self._getFileExtension() in set([".xls", ".xlsx"]):
+           dfPredictions.to_excel(fileName)
+        else: 
+            dfPredictions.to_csv(str(fileName))  
+
+    def _getFileExtension(self) -> str:
+        return os.path.splitext(self.fileLocation)[-1]
+
+
 
 
 

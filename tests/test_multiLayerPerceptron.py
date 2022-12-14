@@ -3,6 +3,7 @@ import os
 import pytest
 
 from tensorflow.keras import Model as TensorflowModel
+from matplotlib import pyplot as plt
 from icecream import ic
 
 from agroml.data import Data, ModelData
@@ -160,9 +161,23 @@ def test_trainModel():
         optimizer="Adam",
     )
     model.train(epochs=5, verbose=2)
-    model.plotTrainHistory()
 
     assert model.trainHistory is not None
+
+def test_plotTrainHistory():
+    global modelData
+
+    model = MultiLayerPerceptron(modelData)
+    model.buildModel(
+        nHiddenLayers=2,
+        neuronsPerLayerList=[10,10],
+        activation="relu",
+        optimizer="Adam",
+    )
+    model.train(epochs=5, verbose=2)
+    figureTrainHistory = model.plotTrainHistory()
+    
+    assert type(figureTrainHistory) is not None
 
 def test_predict():
     global modelData
@@ -178,9 +193,8 @@ def test_predict():
     model.train(epochs=10, verbose=2)
     model.predict()
 
-    model.plotTrainHistory()
-
-    assert False
+    assert model.yPred is not None
+    assert model.yPred.shape == model.yTest.shape
 
 
 
