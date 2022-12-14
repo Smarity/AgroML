@@ -1,3 +1,4 @@
+import pytest
 
 from tensorflow.keras import Model as TensorflowModel
 
@@ -31,4 +32,103 @@ def test_buildModel():
     model = MultiLayerPerceptron(modelData)
     model.buildModel()
     assert isinstance(model.model, TensorflowModel)
+
+    model.buildModel(
+        nHiddenLayers=2,
+        neuronsPerLayerList=[10,10],
+        activation="relu",
+        optimizer="Adam"
+    )
+    assert isinstance(model.model, TensorflowModel)
+
+def test_canTwoModelsBeCompared():
+    global modelData
+
+    model1 = MultiLayerPerceptron(modelData)
+    model1.buildModel()
+    model2 = MultiLayerPerceptron(modelData)
+    model2.buildModel()
+
+    assert model1 == model2
+
+    model2.buildModel(activation="sigmoid")
+    assert model1 != model2
+
+
+def test_buildModelThatFails():
+    global modelData
+
+    model = MultiLayerPerceptron(modelData)
+
+    with pytest.raises(ValueError):
+        model.buildModel(
+            nHiddenLayers=2,
+            neuronsPerLayerList=[10],
+            activation="relu",
+            optimizer="Adam"
+        )
+
+def test_buildModelThatWarns():
+    global modelData
+
+    model = MultiLayerPerceptron(modelData)
+
+    with pytest.warns(UserWarning):
+        model.buildModel(
+            nHiddenLayers=1,
+            neuronsPerLayerList=[10, 20],
+            activation="relu",
+            optimizer="Adam"
+        )
+    
+    with pytest.warns(UserWarning):
+        model.buildModel(
+            nHiddenLayers=1,
+            neuronsPerLayerList=[2],
+            activation="reul",
+            optimizer="Adam"
+        )
+        assert model.activation == "relu"
+    
+    with pytest.warns(UserWarning):
+        model.buildModel(
+            nHiddenLayers=1,
+            neuronsPerLayerList=[2],
+            activation="relu",
+            optimizer="Adm"
+        )
+        assert model.optimizer == "Adam"
+    
+    with pytest.warns(UserWarning):
+        model.buildModel(
+            nHiddenLayers=1,
+            neuronsPerLayerList=[2],
+            activation="reu",
+            optimizer="Adm"
+        )
+        assert model.activation == "relu"
+        assert model.optimizer == "Adam"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

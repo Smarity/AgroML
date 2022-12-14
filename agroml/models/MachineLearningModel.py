@@ -16,7 +16,18 @@ class MachineLearningModel(ABC):
         self.yTrain = self.modelData.yTrain
         self.yTest = self.modelData.yTest
 
-    def __str__():
+        self.allBuiltModelsList = list()
+
+    @abstractmethod
+    def __str__(self):
+        pass
+    
+    @abstractmethod
+    def __eq__(self):
+        pass
+    
+    @abstractmethod
+    def __repr__(self):
         pass
 
     @abstractmethod
