@@ -2,6 +2,7 @@ from warnings import warn
 from typing import Optional
 
 from tensorflow.keras import layers, Model, Input
+from tensorflow.keras.models import load_model
 
 from agroml.data import ModelData
 from agroml.models import MachineLearningModel
@@ -68,7 +69,6 @@ class MultiLayerPerceptron(MachineLearningModel):
 
         self._checkInputParametersfromBuildModel()
 
-        
         inputs = Input(shape=(self.nFeatures, ))
         x = layers.Dense(self.neuronsPerLayerList[0], self.activation)(inputs)
         for i in range(self.nHiddenLayers-1):
@@ -82,14 +82,19 @@ class MultiLayerPerceptron(MachineLearningModel):
         self.allBuiltModelsList.append(self.model)
         return self.model
         
-    def _saveArchitectureParametersAsAttributes(self, nHiddenLayers, neuronsPerLayerList, activation, optimizer):
+    def _saveArchitectureParametersAsAttributes(
+        self, 
+        nHiddenLayers: int, 
+        neuronsPerLayerList: list, 
+        activation: str, 
+        optimizer:str) -> None:
 
         self.nHiddenLayers = nHiddenLayers
         self.neuronsPerLayerList = neuronsPerLayerList
         self.activation = activation
         self.optimizer = optimizer
 
-    def _checkInputParametersfromBuildModel(self):
+    def _checkInputParametersfromBuildModel(self) -> None:
 
         if len(self.neuronsPerLayerList) < self.nHiddenLayers:
             raise ValueError("The number of neurons per layer must be equal to the number of hidden layers")
@@ -113,11 +118,49 @@ class MultiLayerPerceptron(MachineLearningModel):
     def predict(self):
         pass
 
-    def saveModel(self):
-        pass
+    def saveModel(self, fileName:str) -> None:
+        """
+        It saves the model in an specific location and name
 
-    def loadModel(self):
-        pass
+        Parameters:
+        ----------
+        fileName: str
+            File name to save model (without extension). The .h5 extension will
+            be added automatically
+        """
+        if fileName.split('.')[-1] != 'h5':
+            fileName += '.h5'
+        self.model.save(fileName)
+
+    def loadModel(self, fileName):
+        """ It loads a specific model 
+
+        Parameters:
+        ----------
+        fileName: str
+            File name to load model (with extension). The .h5 must be included
+        """
+        self.model = load_model(fileName)
+
+        loadedArchitecture = self._getArchitectureFromLoadedModels()
+        
+        self._saveArchitectureParametersAsAttributes(
+            nHiddenLayers = loadedArchitecture["nHiddenLayers"], 
+            neuronsPerLayerList = loadedArchitecture["neuronsPerLayerList"], 
+            activation = loadedArchitecture["activation"], 
+            optimizer = loadedArchitecture["optimizer"])
+         
+
+    def _getArchitectureFromLoadedModels(self):
+        architecture = dict()
+        
+        architecture["nHiddenLayers"] = len(self.model.layers) - 2
+        architecture["neuronsPerLayerList"] = [
+            self.model.layers[i+1].units for i in range(architecture["nHiddenLayers"])]
+        architecture["activation"] = self.model.layers[1].activation.__name__
+        architecture["optimizer"] = self.model.optimizer.__class__.__name__
+        
+        return architecture
 
     def savePredictions(self):
         pass

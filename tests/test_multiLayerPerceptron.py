@@ -1,6 +1,9 @@
+import os
+
 import pytest
 
 from tensorflow.keras import Model as TensorflowModel
+from icecream import ic
 
 from agroml.data import Data, ModelData
 from agroml.models.regressionModels import MultiLayerPerceptron
@@ -109,8 +112,42 @@ def test_buildModelThatWarns():
         assert model.activation == "relu"
         assert model.optimizer == "Adam"
 
+def test_saveModel():
+    global modelData
 
+    model = MultiLayerPerceptron(modelData)
+    model.buildModel()
 
+    if os.path.isfile("tests/testModel/ModelMLP.h5"):
+        os.remove("tests/testModel/ModelMLP.h5")
+
+    model.saveModel("tests/testModel/ModelMLP.h5")
+    
+    assert os.path.isfile("tests/testModel/ModelMLP.h5")
+
+def test_loadModel():
+    global modelData
+
+    model1 = MultiLayerPerceptron(modelData)
+    model1.buildModel(
+        nHiddenLayers=2,
+        neuronsPerLayerList=[10,10],
+        activation="sigmoid",
+        optimizer="SGD"
+    )
+    model1.saveModel("tests/testModel/ModelMLP1.h5")
+    
+    model2 = MultiLayerPerceptron(modelData)
+    model2.buildModel()
+    model1.saveModel("tests/testModel/ModelMLP2.h5")
+
+    modelLoaded1 = MultiLayerPerceptron(modelData)
+    modelLoaded1.loadModel("tests/testModel/ModelMLP1.h5")
+    
+
+    assert isinstance(model2.model, TensorflowModel)
+    assert model1 == modelLoaded1
+    assert model2 != modelLoaded1
 
 
 
