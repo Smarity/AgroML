@@ -80,7 +80,7 @@ class ModelData():
         self, 
         splitFunction:str="SplitRandom",
         testSize:Optional[float]=0.2,
-        randomState:Optional[int]=42,
+        randomSeed:Optional[int]=42,
         year:Optional[int]=2016,
     ):
         """ It splits the data into train and test data. Besides, it obtains the xTrain, yTrain, xTest, yTest data
@@ -94,26 +94,26 @@ class ModelData():
         
         """
         if splitFunction == "SplitRandom":
-            splitFunction = SplitRandom(
+            split = SplitRandom(
                 data=self.data.pandasDataFrame, 
                 testSize=testSize, 
-                randomState=randomState,
+                randomSeed=randomSeed,
             )
         elif splitFunction == "SplitSequentially":
-            splitFunction = SplitSequentially(
+            split = SplitSequentially(
                 data = self.data.pandasDataFrame,
-                testSize = 0.3,
+                testSize = testSize,
             )
         elif splitFunction == "SplitByYear":
-            splitFunction = SplitByYear(
+            split = SplitByYear(
                 data = self.data.pandasDataFrame,
                 year = year,
             )
         else:
             warnings.warn(UserWarning("Your split function is not defined"))
-            splitFunction = SplitRandom(data=self.data.pandasDataFrame)
+            split = SplitRandom(data=self.data.pandasDataFrame)
 
-        self._dataTrain, self._dataTest = splitFunction.splitToTrainTest()
+        self._dataTrain, self._dataTest = split.splitToTrainTest()
 
         # split the train and test into xTrain, yTrain, xTest, yTest
         self._xTrain, self._yTrain = self.defineInputAndOutputData(self._dataTrain)

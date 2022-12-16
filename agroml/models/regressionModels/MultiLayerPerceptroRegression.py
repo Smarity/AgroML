@@ -36,7 +36,6 @@ class MultiLayerPerceptron(MachineLearningModel):
         else:
             return False
 
-    
     def buildModel(
         self,
         nHiddenLayers: Optional[int] = 1,
@@ -68,8 +67,7 @@ class MultiLayerPerceptron(MachineLearningModel):
             nHiddenLayers = nHiddenLayers,
             neuronsPerLayerList = neuronsPerLayerList,
             activation = activation,
-            optimizer = optimizer,
-        )
+            optimizer = optimizer)
 
         self._checkInputParametersfromBuildModel()
 

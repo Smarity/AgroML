@@ -13,10 +13,10 @@ class Split(ABC):
         pass
     
 class SplitRandom(Split):
-    def __init__(self, data:pd.DataFrame, testSize:float=0.3, randomState:int=42) -> None:
+    def __init__(self, data:pd.DataFrame, testSize:float=0.3, randomSeed:int=42) -> None:
         self.data = data
         self.testSize = testSize
-        self.randomState = randomState
+        self.randomSeed = randomSeed
 
     def splitToTrainTest(self) -> tuple:
         """Split the data into train and test sets randomly.
@@ -27,7 +27,7 @@ class SplitRandom(Split):
             The data to split
         testSize : float, optional
             The proportion of the data to include in the test set, by default 0.3
-        randomState : int, optional
+        randomSeed : int, optional
             The seed to use for the random number generator, by default 42
 
         Returns
@@ -36,7 +36,7 @@ class SplitRandom(Split):
             A tuple with the train and test pandas dataframe
         """
         
-        train, test = train_test_split(self.data, test_size=self.testSize, random_state=self.randomState)
+        train, test = train_test_split(self.data, test_size=self.testSize, random_state=self.randomSeed)
         train = pd.DataFrame(train, columns=self.data.columns)
         test = pd.DataFrame(test, columns=self.data.columns)
 

@@ -58,7 +58,7 @@ def test_splitToTrainTestRandom():
         modelData.splitToTrainTest(
             splitFunction = "SplitRandom",
             testSize = testSize,
-            randomState = 42,
+            randomSeed = 42,
         )
 
         assert modelData.dataTrain.shape[0] + modelData.dataTest.shape[0] == modelData.data.shape[0]
