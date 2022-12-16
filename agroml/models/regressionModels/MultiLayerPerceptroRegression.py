@@ -36,7 +36,7 @@ class MultiLayerPerceptron(MachineLearningModel):
         else:
             return False
 
-    @saveModelWhenCalledIt
+    
     def buildModel(
         self,
         nHiddenLayers: Optional[int] = 1,
