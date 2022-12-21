@@ -93,18 +93,18 @@ class ModelData():
             The size of the test data. Just for SplitRandom and SplitSequentially, by default 0.2 
         
         """
-        if splitFunction == "SplitRandom":
+        if "Random" in splitFunction:
             split = SplitRandom(
                 data=self.data.pandasDataFrame, 
                 testSize=testSize, 
                 randomSeed=randomSeed,
             )
-        elif splitFunction == "SplitSequentially":
+        elif "Seq" in splitFunction:
             split = SplitSequentially(
                 data = self.data.pandasDataFrame,
                 testSize = testSize,
             )
-        elif splitFunction == "SplitByYear":
+        elif "Year" in splitFunction:
             split = SplitByYear(
                 data = self.data.pandasDataFrame,
                 year = year,

@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
+import pdb
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import KFold
+from icecream import ic
 
 from agroml.data import ModelData
 from agroml.preprocessing import SplitRandom, SplitSequentially
@@ -48,67 +51,91 @@ class CashOptimizer(ABC):
         self.yVal   = None
 
 
+
     def _splitToValidation(self):
 
         if "Random" in self.splitFunction:
-            split = SplitRandom(
+            split_xTrain = SplitRandom(
                 data=self.xTrain, 
                 testSize=self.validationSize, 
                 randomSeed = self.randomSeed)
-
-            self.xTrain, self.xVal = split.splitToTrainTest()
+            self.xTrain, self.xVal = split_xTrain.splitToTrainTest()
             self.xTrainIndex = self.xTrain.index
             self.xValIndex = self.xVal.index
             self.xTrain = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.xTrain)
             self.xVal   = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.xVal)
-
-            self.yTrain, self.yVal = split.splitToTrainTest()
+                
+            split_yTrain = SplitRandom(
+                data=self.yTrain, 
+                testSize=self.validationSize, 
+                randomSeed = self.randomSeed)
+            self.yTrain, self.yVal = split_yTrain.splitToTrainTest()
             self.yTrainIndex = self.yTrain.index
             self.yValIndex = self.yVal.index
             self.yTrain = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.yTrain)
             self.yVal   = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.yVal)
 
         elif "Seq" in self.splitFunction:
-            split = SplitSequentially(
-                data = self.modelData.data.pandasDataFrame,
+            split_xTrain = SplitSequentially(
+                data =  self.xTrain,
                 testSize = self.validationSize)
-
-            self.xTrain, self.xVal = split.splitToTrainTest()
+            self.xTrain, self.xVal = split_xTrain.splitToTrainTest()
             self.xTrainIndex = self.xTrain.index
             self.xValIndex = self.xVal.index
             self.xTrain = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.xTrain)
             self.xVal   = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.xVal)
 
-            self.yTrain, self.yVal = split.splitToTrainTest()
+            split_yTrain = SplitSequentially(
+                data=self.yTrain, 
+                testSize = self.validationSize)
+            self.yTrain, self.yVal = split_yTrain.splitToTrainTest()
             self.yTrainIndex = self.yTrain.index
             self.yValIndex = self.yVal.index
             self.yTrain = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.yTrain)
             self.yVal   = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.yVal)
 
-
         elif  "Cross" in self.splitFunction:
-            kf = KFold(n_splits=self.nFolds, random_state=self.randomSeed)
+            kf = KFold(n_splits=self.nFolds)
             
             # the list will be later transformed into numpy array in order to
             # check te shape (fold, nSamples, nFeatures)
-            xTrain, yTrain = list(), list()
-            xVal, yVal = list(), list()
-            for train_index, val_index in kf.split(self.xTrain):
-                xTrain.append(self.xTrain[train_index])
-                xVal.append(self.xTrain[val_index])
-                yTrain.append(self.yTrain[train_index])
-                yVal.append(self.yTrain[val_index])
+            xTrain = list()
+            yTrain = list()
+            xVal = list()
+            yVal = list()
 
+            # Kfold does not give always the same number of samples in the validation set
+            # and training set. This is why we calculate the minimum len
+            nSamplesTrain = list()
+            nSamplesVal = list()
+            for train_index, val_index in kf.split(self.xTrain):
+                nSamplesTrain.append(len(train_index))
+                nSamplesVal.append(len(val_index))
+            minTrain = min(nSamplesTrain)
+            minVal = min(nSamplesVal)
+             
+            # Calculate the train and validation sets
+            for train_index, val_index in kf.split(self.xTrain):
+                xTrain.append(self.xTrain.iloc[train_index[:minTrain]])
+                yTrain.append(self.yTrain.iloc[train_index[:minTrain]])
+                xVal.append(self.xTrain.iloc[val_index[:minVal]])
+                yVal.append(self.yTrain.iloc[val_index[:minVal]])
+          
+            
             self.xTrain = np.array(xTrain)
             self.yTrain = np.array(yTrain)
-            self.xVal   = np.array(xVal)
-            self.yVal   = np.array(yVal)
+            self.xVal = np.array(xVal)
+            self.yVal = np.array(yVal)
 
         else:
             self.xTrain = np.array(self.xTrain)
+            self.xTrain = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.xTrain)
+
             self.yTrain = np.array(self.yTrain)
-            self.xVal   = np.array(self.xVal)
-            self.yVal   = np.array(self.yVal)
+            self.yTrain = self._reshapeTwoDimArrayToThreeDimNumpyArray(self.yTrain)
+            
+            self.xVal   = None
+            self.yVal   = None
 
     def _reshapeTwoDimArrayToThreeDimNumpyArray(self, array)->np.array:
         npArray = np.array(array)
