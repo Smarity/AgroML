@@ -136,6 +136,9 @@ def test_optimizeModel():
         modelData = modelData,
         splitFunction = "SplitRandom",
         validationSize = 0.3,
+        randomEpochs = 1,
+        totalEpochs = 2,
+
         )
 
     mlModel = MultiLayerPerceptron(modelData)
@@ -151,8 +154,7 @@ def test_optimizeModel():
         },
         verbose = 1,
     )
-    
-    ic(bayesianOptimization.hyperparameterDimensionList)
-    ic(bayesianOptimization.hyperparameterDefaultValuesList)
 
-    assert False
+    assert bayesianOptimization.bestParams is not None
+    assert bayesianOptimization.bestScore is not None
+

@@ -53,8 +53,8 @@ class CashOptimizer(ABC):
         self.modelData = modelData
         self.splitFunction = splitFunction
         self.validationSize = validationSize
-        self.randomSeed = randomSeed
         self.nFolds = nFolds
+        self.randomSeed = randomSeed
         self.totalEpochs = totalEpochs
         self.randomEpochs = randomEpochs
 
@@ -66,6 +66,7 @@ class CashOptimizer(ABC):
 
 
     def _splitToValidation(self):
+        # update nFolds for later use
 
         if "Random" in self.splitFunction:
             split_xTrain = SplitRandom(

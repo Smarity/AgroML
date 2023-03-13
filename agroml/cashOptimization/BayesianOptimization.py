@@ -58,21 +58,15 @@ class BayesianOptimization(CashOptimizer):
         )           
 
         # set the hyperparameter dimension
+        # not to change to CashOptimizer because I will modify it in the future and 
+        # I need it to be differnt from the rest.
         self.hyperparameterDimensionList =  [
+            hyperparameterSpace["nHiddenLayers"],
+            hyperparameterSpace["neuronsPerLayerList"],
             hyperparameterSpace["activation"],
             hyperparameterSpace["optimizer"],
             hyperparameterSpace["epochs"],
         ]
-
-        for i in range(hyperparameterSpace["nHiddenLayers"].high):
-            name_neuron = 'neurons_' + str(i+1)
-            self.hyperparameterDimensionList.append(
-                Integer(
-                    low=1, 
-                    high=hyperparameterSpace["nHiddenLayers"].high,
-                    name=name_neuron
-                )
-            )
 
         # set the hyperparameter default values
         self.hyperparameterDefaultValuesList = [
@@ -86,11 +80,10 @@ class BayesianOptimization(CashOptimizer):
         # fitness function
         @use_named_args(dimensions= self.hyperparameterDimensionList)
         def _fitnessFunction(**params):
-            ic(params)
             # build model
             self.model = self.mlModel.buildModel(
                 nHiddenLayers = params['nHiddenLayers'], 
-                neuronsPerLayerList=params['neuronsPerLayerList'],
+                neuronsPerLayerList=[params['neuronsPerLayerList'] for _ in range(params["nHiddenLayers"])],
                 activation=params['activation'],
                 optimizer=params['optimizer'],
                 epochs=params['epochs']
@@ -98,7 +91,8 @@ class BayesianOptimization(CashOptimizer):
 
             # fit model
             maeList = list()
-            for i in range(self.nFolds):
+            actual_nFolds = self.xTrain.shape[0]
+            for i in range(actual_nFolds):
                 # set datasets in the model
                 self.mlModel.xTrain = self.xTrain[i]
                 self.mlModel.yTrain = self.yTrain[i]
@@ -111,11 +105,12 @@ class BayesianOptimization(CashOptimizer):
                     self.mlModel.yTest = self.yTrain[i]
 
                 self.mlModel.train(
-                    verbose=self.verbose,
+                    verbose = self.verbose,
                 )
-            
-                yPred = self.mlModel.predict()
-                maeList.append(getMeanAbsoluteError(self.yTrain[i], self.yPred))
+
+                self.mlModel.predict()
+                yPred = self.mlModel.yPred.to_numpy()
+                maeList.append(getMeanAbsoluteError(self.mlModel.yTest, yPred))
                 
             return np.mean(maeList)
 
@@ -128,22 +123,30 @@ class BayesianOptimization(CashOptimizer):
             n_jobs = -1,
             x0 = self.hyperparameterDefaultValuesList,
             n_random_starts = self.randomEpochs)
+        
         self.bayesianIterations = self.bestParams.x_iters
         
         # best model
-        self.bestModel = self.buildModel(
-            hiddenLayers = self.bestParams.x[0],
-            neurons = self.bestParams.x[1],
-            activation= self.bestParams.x[2],
-            optimizer = self.bestParams.x[3])
+        best_nHiddenLayers = self.bestParams.x[0]
+        best_neuronsPerLayerList = [self.bestParams.x[1] for _ in range(best_nHiddenLayers)]
+        best_activation = self.bestParams.x[2]
+        best_optimizer = self.bestParams.x[3]
+        best_epochs = self.bestParams.x[4]
+
+        self.bestModel = self.mlModel.buildModel(
+            nHiddenLayers = best_nHiddenLayers,
+            neuronsPerLayerList = best_neuronsPerLayerList,
+            activation= best_activation,
+            optimizer = best_optimizer,
+            epochs = best_epochs)
         
         # best parameters
         self.bestParams = {
-            'nHiddenLayers': self.bestParams.x[0], 
-            'neuronsPerLayerList': self.bestParams.x[1],
-            'activation': self.bestParams.x[2],
-            'optimizer': self.bestParams.x[3],
-            'epochs': self.bestParams.x[4]
+            'nHiddenLayers': best_nHiddenLayers, 
+            'neuronsPerLayerList': best_neuronsPerLayerList,
+            'activation': best_activation,
+            'optimizer': best_optimizer,
+            'epochs': best_epochs
         }
 
         return self.bestModel, self.bestParams
