@@ -159,8 +159,9 @@ def test_trainModel():
         neuronsPerLayerList=[10,10],
         activation="relu",
         optimizer="Adam",
+        epochs=5
     )
-    model.train(epochs=5, verbose=2)
+    model.train(verbose=2)
 
     assert model.trainHistory is not None
 
@@ -173,8 +174,9 @@ def test_plotTrainHistory():
         neuronsPerLayerList=[10,10],
         activation="relu",
         optimizer="Adam",
+        epochs=5
     )
-    model.train(epochs=5, verbose=2)
+    model.train(verbose=2)
     figureTrainHistory = model.plotTrainHistory()
     
     assert type(figureTrainHistory) is not None
@@ -188,9 +190,10 @@ def test_predict():
         neuronsPerLayerList=[10,10],
         activation="relu",
         optimizer="Adam",
+        epochs=5
     )
 
-    model.train(epochs=10, verbose=2)
+    model.train(verbose=2)
     model.predict()
 
     assert model.yPred is not None

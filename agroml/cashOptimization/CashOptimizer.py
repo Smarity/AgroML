@@ -4,14 +4,18 @@ from typing import Optional
 import pdb
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import KFold
 from icecream import ic
+from sklearn.model_selection import KFold
+from skopt import gp_minimize
+from skopt.utils import use_named_args
+from skopt.space import Real, Categorical, Integer
 
 from agroml.data import ModelData
+from agroml.models import MachineLearningModel
 from agroml.preprocessing import SplitRandom, SplitSequentially
+from agroml.utils import getMeanAbsoluteError
 
 class CashOptimizer(ABC):
-
     @abstractmethod
     def __init__(
         self,
@@ -20,6 +24,9 @@ class CashOptimizer(ABC):
         validationSize:Optional[float] = 0.2,
         randomSeed:Optional[int] = 42,
         nFolds:Optional[int] = 5,
+        totalEpochs:Optional[int] = 50,
+        randomEpochs:Optional[int] = 40,
+
     ):
         """Base class for cash optimization algorithms.
 
@@ -38,12 +45,18 @@ class CashOptimizer(ABC):
         nFolds : Optional[int], optional
             The number of folds to use in the cross validation, by default 5. Only used if splitFunction
             is "CrossValidation"
+        totalEpochs : Optional[int], optional
+            The total number of epochs to run the optimization, by default 50
+        randomEpochs : Optional[int], optional
+            The number of epochs to run the random search, by default 40
         """
         self.modelData = modelData
         self.splitFunction = splitFunction
         self.validationSize = validationSize
         self.randomSeed = randomSeed
         self.nFolds = nFolds
+        self.totalEpochs = totalEpochs
+        self.randomEpochs = randomEpochs
 
         self.xTrain = modelData.xTrain.reset_index(drop=True)
         self.yTrain = modelData.yTrain.reset_index(drop=True)
@@ -120,7 +133,6 @@ class CashOptimizer(ABC):
                 yTrain.append(self.yTrain.iloc[train_index[:minTrain]])
                 xVal.append(self.xTrain.iloc[val_index[:minVal]])
                 yVal.append(self.yTrain.iloc[val_index[:minVal]])
-          
             
             self.xTrain = np.array(xTrain)
             self.yTrain = np.array(yTrain)
@@ -155,6 +167,27 @@ class CashOptimizer(ABC):
         pass
 
     @abstractmethod
-    def optimize():
-        pass
+    def optimize(
+        self,
+        mlModel: MachineLearningModel,
+        hyperparameterSpace: dict(),
+        verbose: int = 0,
+        ):
+        self.mlModel = mlModel
+        self.hyperparameterSpace = hyperparameterSpace
+        self.verbose = verbose
+        
+        # create a list with the hyperparameter space
+        self.hyperparameterDimensionList =  [
+            hyperparameterSpace[key] for key in hyperparameterSpace.keys()
+        ]
 
+
+        self.hyperparameterDefaultValuesList = [
+            hyperparameterSpace[key].low 
+            if (type(hyperparameterSpace[key]) is Integer or type(hyperparameterSpace[key]) is Real)
+            else hyperparameterSpace[key].categories[0]
+            for key in hyperparameterSpace.keys()
+        ]
+
+        

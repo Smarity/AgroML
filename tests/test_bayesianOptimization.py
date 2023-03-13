@@ -1,10 +1,11 @@
 
 import numpy as np
 from icecream import ic
-
+from skopt.space import Real, Categorical, Integer
 
 from agroml.data import Data, ModelData
 from agroml.cashOptimization import BayesianOptimization
+from agroml.models.regressionModels import MultiLayerPerceptron
 
 
 rawdata = Data("tests/testData/dataExample.csv")
@@ -18,13 +19,40 @@ modelData.normalizeData(method= "StandardScaler")
 def test_initialization():
     global modelData
 
-    bayesianOptimization = BayesianOptimization(modelData)
+    bayesianOptimization = BayesianOptimization(
+        modelData = modelData,
+        splitFunction = "SplitRandom",
+        validationSize = 0.4,
+        randomSeed = 21,
+        nFolds = 10,
+        totalEpochs=100,
+        randomEpochs=80
+    )
+
+    assert bayesianOptimization.modelData == modelData
+    assert bayesianOptimization.splitFunction == "SplitRandom"
+    assert bayesianOptimization.validationSize == 0.4
+    assert bayesianOptimization.randomSeed == 21
+    assert bayesianOptimization.nFolds == 10
+    assert bayesianOptimization.totalEpochs == 100
+    assert bayesianOptimization.randomEpochs == 80
+
+def test_init_default_values():
+    # They should be different to the default values in CashOptimizer
+    global modelData
+
+    bayesianOptimization = BayesianOptimization(
+        modelData = modelData
+        )
 
     assert bayesianOptimization.modelData == modelData
     assert bayesianOptimization.splitFunction == "None"
-    assert bayesianOptimization.validationSize == 0.2
-    assert bayesianOptimization.randomSeed == 42
-    assert bayesianOptimization.nFolds == 5
+    assert bayesianOptimization.validationSize == 0.3
+    assert bayesianOptimization.randomSeed == 43
+    assert bayesianOptimization.nFolds == 6
+    assert bayesianOptimization.totalEpochs == 51
+    assert bayesianOptimization.randomEpochs == 41
+
     assert bayesianOptimization.xVal is None
     assert bayesianOptimization.yVal is None
 
@@ -101,3 +129,30 @@ def test_splitToValidationUsingKFold():
     assert bayesianOptimization.yVal.shape[0] == 5
     
 
+def test_optimizeModel():
+    global modelData
+
+    bayesianOptimization = BayesianOptimization(
+        modelData = modelData,
+        splitFunction = "SplitRandom",
+        validationSize = 0.3,
+        )
+
+    mlModel = MultiLayerPerceptron(modelData)
+
+    bayesianOptimization.optimize(
+        mlModel = mlModel,
+        hyperparameterSpace = {
+            "nHiddenLayers": Integer(low = 1, high = 5, name = "nHiddenLayers"),
+            "neuronsPerLayerList": Integer(low = 1, high = 5, name = "neuronsPerLayerList"),
+            "activation": Categorical(categories = ["relu", "tanh", "sigmoid"], name = "activation"),
+            "optimizer": Categorical(categories = ["adam", "sgd", "rmsprop"], name = "optimizer"),
+            "epochs": Integer(low = 50, high = 200, name = "epochs"),
+        },
+        verbose = 1,
+    )
+    
+    ic(bayesianOptimization.hyperparameterDimensionList)
+    ic(bayesianOptimization.hyperparameterDefaultValuesList)
+
+    assert False

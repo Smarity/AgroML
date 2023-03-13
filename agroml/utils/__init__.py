@@ -1,12 +1,12 @@
-from doNotRunItTwice import doNotRunItTwice
-from statistics import getMeanBiasError
-from statistics import getRootMeanSquaredError
-from statistics import getMeanAbsoluteError
-from statistics import getCoefficientOfDetermination
-from statistics import getNashSuteliffeEfficiency
-from statistics import getLinearRegression
+
+from agroml.utils.statistics import getMeanBiasError
+from agroml.utils.statistics import getRootMeanSquaredError
+from agroml.utils.statistics import getMeanAbsoluteError
+from agroml.utils.statistics import getCoefficientOfDetermination
+from agroml.utils.statistics import getNashSuteliffeEfficiency
+from agroml.utils.statistics import getLinearRegression
 __all__ = [
-    'doNotRunItTwice', "getMeanBiasError", "getRootMeanSquaredError", 
+    "getMeanBiasError", "getRootMeanSquaredError", 
     "getMeanAbsoluteError", "getCoefficientOfDetermination", "getNashSuteliffeEfficiency", 
-    "getLinearRegression"
+    "getLinearRegression",
 ]

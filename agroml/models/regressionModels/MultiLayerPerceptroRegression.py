@@ -4,6 +4,7 @@ from typing import Optional
 
 import pandas as pd
 from matplotlib import pyplot as plt
+from skopt.space import Real, Categorical, Integer
 from tensorflow.keras import layers, Model, Input
 from tensorflow.keras.models import load_model
 
@@ -17,14 +18,32 @@ class MultiLayerPerceptron(MachineLearningModel):
     def __str__(self):
         pass
 
+    @property
+    def hiperparameters(self):
+        hyperparameters = {
+            "nHiddenLayers": Integer,
+            "neuronsPerLayerList": Integer,
+            "activation": Categorical,
+            "optimizer": Categorical,
+            "epochs": Integer,
+        }
+        
+        return hyperparameters
+
     def __repr__(self):
         printMessage ="""
         MultiLayerPerceptron(
             "hiddenLayers":{}, 
             "neuronsPerLayerList":{}, 
             "activation":{}, 
-            "optimizer":{})
-        """.format(self.nHiddenLayers, self.neuronsPerLayerList, self.activation, self.optimizer)
+            "optimizer":{},
+            "epochs": {}
+        """.format(
+            self.nHiddenLayers, 
+            self.neuronsPerLayerList, 
+            self.activation, 
+            self.optimizer,
+            self.epochs)
         return printMessage
 
     def __eq__(self, other):
@@ -42,6 +61,7 @@ class MultiLayerPerceptron(MachineLearningModel):
         neuronsPerLayerList: Optional[list] = [10],
         activation: Optional[str] = "relu",
         optimizer: Optional[str] = "Adam",
+        epochs: Optional[int] = 100,
         ) -> Model:
         """
         
@@ -61,13 +81,16 @@ class MultiLayerPerceptron(MachineLearningModel):
             Optimizer to be used. The default is "Adam". Any of the following can
             be set: 'SGD','RMSprop', 'Adam','Adadelta','Adagrad','Adamax','Nadam','
             Ftrl' -- https://keras.io/api/optimizers/
+        epochs : Optional[int], optional
+            Number of epochs to train the model. The default is 100.
         """
         
         self._saveArchitectureParametersAsAttributes(
             nHiddenLayers = nHiddenLayers,
             neuronsPerLayerList = neuronsPerLayerList,
             activation = activation,
-            optimizer = optimizer)
+            optimizer = optimizer,
+            epochs = epochs)
 
         self._checkInputParametersfromBuildModel()
 
@@ -88,12 +111,14 @@ class MultiLayerPerceptron(MachineLearningModel):
         nHiddenLayers: int, 
         neuronsPerLayerList: list, 
         activation: str, 
-        optimizer:str) -> None:
+        optimizer:str,
+        epochs:int) -> None:
 
         self.nHiddenLayers = nHiddenLayers
         self.neuronsPerLayerList = neuronsPerLayerList
         self.activation = activation
         self.optimizer = optimizer
+        self.epochs = epochs
 
     def _checkInputParametersfromBuildModel(self) -> None:
 
@@ -110,7 +135,7 @@ class MultiLayerPerceptron(MachineLearningModel):
             self.optimizer = "Adam"
             warn(UserWarning("The optimizer is not valid. The default optimizer will be used (Adam)"))
 
-    def train(self, epochs:int, verbose:int=1):
+    def train(self, verbose:int=1):
         """
         Parameters:
         ----------
@@ -122,7 +147,7 @@ class MultiLayerPerceptron(MachineLearningModel):
         self.trainHistory=self.model.fit(
             self.xTrain, 
             self.yTrain, 
-            epochs=epochs,
+            epochs=self.epochs,
             verbose=verbose)
             #callbacks = self.my_callback)
 
@@ -193,7 +218,8 @@ class MultiLayerPerceptron(MachineLearningModel):
             nHiddenLayers = loadedArchitecture["nHiddenLayers"], 
             neuronsPerLayerList = loadedArchitecture["neuronsPerLayerList"], 
             activation = loadedArchitecture["activation"], 
-            optimizer = loadedArchitecture["optimizer"])
+            optimizer = loadedArchitecture["optimizer"],
+            epochs = 100)
          
 
     def _getArchitectureFromLoadedModels(self) -> dict:
