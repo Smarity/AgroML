@@ -156,5 +156,34 @@ def test_optimizeModel():
     )
 
     assert bayesianOptimization.bestParams is not None
-    assert bayesianOptimization.bestScore is not None
+    assert bayesianOptimization.bestModel is not None
 
+def test_optimizeModelBadConfiguration():
+
+    global modelData
+
+    bayesianOptimization = BayesianOptimization(
+        modelData = modelData,
+        splitFunction = "SplitRandom",
+        validationSize = 0.3,
+        randomEpochs = 2,
+        totalEpochs = 1,
+
+        )
+
+    mlModel = MultiLayerPerceptron(modelData)
+
+    bayesianOptimization.optimize(
+        mlModel = mlModel,
+        hyperparameterSpace = {
+            "nHiddenLayers": Integer(low = 1, high = 5, name = "nHiddenLayers"),
+            "neuronsPerLayerList": Integer(low = 1, high = 5, name = "neuronsPerLayerList"),
+            "activation": Categorical(categories = ["relu", "tanh", "sigmoid"], name = "activation"),
+            "optimizer": Categorical(categories = ["adam", "sgd", "rmsprop"], name = "optimizer"),
+            "epochs": Integer(low = 50, high = 200, name = "epochs"),
+        },
+        verbose = 1,
+    )
+
+    assert bayesianOptimization.bestParams is not None
+    assert bayesianOptimization.bestModel is not None
